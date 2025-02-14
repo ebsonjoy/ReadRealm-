@@ -3,7 +3,8 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import API from "../api/axiosInstance";
 import { Trash2, Edit, Heart, ThumbsDown, Ban, Eye, PlusCircle } from "lucide-react";
-const IMAGE_BASE_URL = 'http://localhost:4000/articleImages/'
+const API_IMG = import.meta.env.VITE_API_URL;
+const IMAGE_BASE_URL = `${API_IMG}/articleImages/`
 
 const ArticleListPage = () => {
   const [articles, setArticles] = useState([]);

@@ -3,7 +3,8 @@ import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import API from '../api/axiosInstance';
-const IMAGE_BASE_URL = 'http://localhost:4000/articleImages/'
+const API_IMG = import.meta.env.VITE_API_URL;
+const IMAGE_BASE_URL = `${API_IMG}/articleImages/`
 
 const Dashboard = () => {
   const [articles, setArticles] = useState([]);
