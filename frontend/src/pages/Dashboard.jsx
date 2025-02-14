@@ -7,6 +7,7 @@ const API_IMG = import.meta.env.VITE_API_URL;
 const IMAGE_BASE_URL = `${API_IMG}/articleImages/`
 
 const Dashboard = () => {
+  console.log(API_IMG)
   const [articles, setArticles] = useState([]);
   const [selectedArticle, setSelectedArticle] = useState(null);
   const [loading, setLoading] = useState(true);
