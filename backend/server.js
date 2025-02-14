@@ -13,7 +13,7 @@ connectDB();
 const app = express()
 app.use(express.json())
 app.use(cors({
-    origin: process.env.CLIENT_ORIGIN || "https://read-realm-sepia.vercel.app/",
+    origin: [process.env.CLIENT_ORIGIN2,process.env.CLIENT_ORIGIN],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true
   }));
