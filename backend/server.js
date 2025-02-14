@@ -14,7 +14,7 @@ const app = express()
 app.use(express.json())
 app.use(cors({
     origin: [process.env.CLIENT_ORIGIN,process.env.CLIENT_ORIGIN2],
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true
   }));
 app.use(express.urlencoded({extended:true}))
