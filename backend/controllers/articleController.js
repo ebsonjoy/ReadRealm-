@@ -150,9 +150,9 @@ const fetchArticlesById = asyncHandler(async (req, res) => {
 
 const fetchArticlesByCategory = asyncHandler(async (req, res) => {
     const { categoryId } = req.params;
-
+    const userId = req.user._id
     try {
-        const articles = await Article.find({ category: categoryId }).populate("category").populate("createdBy", "name").sort({ createdAt: -1 });
+        const articles = await Article.find({ category: categoryId, blockedBy: { $ne: userId }}).populate("category").populate("createdBy", "name").sort({ createdAt: -1 });
 
         if (articles.length === 0) {
             return res.status(404).json({ message: "No articles found for this category" });
@@ -167,7 +167,6 @@ const fetchArticlesByCategory = asyncHandler(async (req, res) => {
 const userLikeArticle = asyncHandler(async (req, res) => {
     const { userId, articleId } = req.params;
 
-    // Validate ObjectId format
     if (!mongoose.Types.ObjectId.isValid(articleId) || !mongoose.Types.ObjectId.isValid(userId)) {
         return res.status(400).json({ message: 'Invalid article or user ID format' });
     }
@@ -178,23 +177,18 @@ const userLikeArticle = asyncHandler(async (req, res) => {
     }
 
     try {
-        // Initialize arrays if they don't exist
         if (!article.likes) article.likes = [];
         if (!article.dislikes) article.dislikes = [];
 
-        // Remove from dislikes if present
         const dislikeIndex = article.dislikes.indexOf(userId);
         if (dislikeIndex !== -1) {
             article.dislikes.splice(dislikeIndex, 1);
         }
 
-        // Toggle like
         const likeIndex = article.likes.indexOf(userId);
         if (likeIndex !== -1) {
-            // Unlike if already liked
             article.likes.splice(likeIndex, 1);
         } else {
-            // Add like if not already liked
             article.likes.push(userId);
         }
 
@@ -259,7 +253,6 @@ const userDislikeArticle = asyncHandler(async (req, res) => {
 const userBlockArticle = asyncHandler(async (req, res) => {
     const { userId, articleId } = req.params;
 
-    // Validate ObjectId format
     if (!mongoose.Types.ObjectId.isValid(articleId) || !mongoose.Types.ObjectId.isValid(userId)) {
         return res.status(400).json({ message: 'Invalid article or user ID format' });
     }
@@ -270,16 +263,12 @@ const userBlockArticle = asyncHandler(async (req, res) => {
     }
 
     try {
-        // Initialize array if it doesn't exist
         if (!article.blockedBy) article.blockedBy = [];
 
-        // Toggle block status
         const blockIndex = article.blockedBy.indexOf(userId);
         if (blockIndex !== -1) {
-            // Unblock if already blocked
             article.blockedBy.splice(blockIndex, 1);
         } else {
-            // Block if not already blocked
             article.blockedBy.push(userId);
         }
 
@@ -298,7 +287,26 @@ const userBlockArticle = asyncHandler(async (req, res) => {
     }
 });
 
-// Don't forget to import mongoose at the top of your file
+const deleteArticle = asyncHandler(async (req, res) => {
+    try {
+        const { articleId } = req.params
+
+        if (!articleId) {
+            return res.status(400).json({ message: 'articleId is required' });
+        }
+        const deletedArticle = await Article.findByIdAndDelete(articleId);
+
+        if (!deletedArticle) {
+            return res.status(404).json({ message: 'Article not found' });
+        }
+
+        res.status(200).json({ message: 'Article deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting article:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
 
 export {
     createCategory,
@@ -312,5 +320,6 @@ export {
     fetchArticlesById,
     userLikeArticle, 
     userDislikeArticle, 
-    userBlockArticle
+    userBlockArticle,
+    deleteArticle
 };

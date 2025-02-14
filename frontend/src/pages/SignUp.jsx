@@ -74,11 +74,7 @@ const Registration = () => {
             <h2 className="text-3xl font-bold text-gray-800">Create Account</h2>
             <p className="text-gray-500 mt-2">Sign up to explore articles</p>
           </div>
-
-          {/* Error Message */}
           {error && <div className="bg-red-50 text-red-500 p-3 rounded-lg mb-4 text-center">{error}</div>}
-
-          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="flex gap-4">
               <div className="relative w-1/2">

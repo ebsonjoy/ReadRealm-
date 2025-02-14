@@ -49,6 +49,11 @@ const Dashboard = () => {
         response = res.data;
       }
       
+      // Filter out blocked articles if user is logged in
+      if (userData?._id) {
+        response = response.filter(article => !article.blockedBy?.includes(userData._id));
+      }
+      
       setArticles(response);
     } catch (error) {
       console.error('Error fetching articles:', error);
@@ -60,47 +65,52 @@ const Dashboard = () => {
 
   const handleAction = async (actionType, articleId) => {
     if (!userData?._id) {
-      navigate('/login');
+      navigate('/user-login');
       return;
     }
 
     try {
       await API.put(`/article/${actionType}/${userData._id}/${articleId}`);
-      setArticles(prevArticles => 
-        prevArticles.map(article => {
-          if (article._id !== articleId) return article;
-          
-          const updatedArticle = { ...article };
-          const userId = userData._id;
-          
-          switch(actionType) {
-            case 'like':
-              if (!updatedArticle.likes?.includes(userId)) {
-                updatedArticle.likes = [...(updatedArticle.likes || []), userId];
-                updatedArticle.dislikes = updatedArticle.dislikes?.filter(id => id !== userId) || [];
-              }
-              break;
-            case 'dislike':
-              if (!updatedArticle.dislikes?.includes(userId)) {
-                updatedArticle.dislikes = [...(updatedArticle.dislikes || []), userId];
-                updatedArticle.likes = updatedArticle.likes?.filter(id => id !== userId) || [];
-              }
-              break;
-            case 'block':
-              if (!updatedArticle.blockedBy?.includes(userId)) {
-                updatedArticle.blockedBy = [...(updatedArticle.blockedBy || []), userId];
-              }
-              break;
-            default:
-              break;
-          }
-          
-          return updatedArticle;
-        })
-      );
       
-      if (selectedArticle?._id === articleId) {
-        setSelectedArticle(articles.find(article => article._id === articleId));
+      if (actionType === 'block') {
+        // Remove the blocked article from the display
+        setArticles(prevArticles => prevArticles.filter(article => article._id !== articleId));
+        // Close the modal if the blocked article was being viewed
+        if (selectedArticle?._id === articleId) {
+          setSelectedArticle(null);
+        }
+      } else {
+        setArticles(prevArticles => 
+          prevArticles.map(article => {
+            if (article._id !== articleId) return article;
+            
+            const updatedArticle = { ...article };
+            const userId = userData._id;
+            
+            switch(actionType) {
+              case 'like':
+                if (!updatedArticle.likes?.includes(userId)) {
+                  updatedArticle.likes = [...(updatedArticle.likes || []), userId];
+                  updatedArticle.dislikes = updatedArticle.dislikes?.filter(id => id !== userId) || [];
+                }
+                break;
+              case 'dislike':
+                if (!updatedArticle.dislikes?.includes(userId)) {
+                  updatedArticle.dislikes = [...(updatedArticle.dislikes || []), userId];
+                  updatedArticle.likes = updatedArticle.likes?.filter(id => id !== userId) || [];
+                }
+                break;
+              default:
+                break;
+            }
+            
+            return updatedArticle;
+          })
+        );
+        
+        if (selectedArticle?._id === articleId) {
+          setSelectedArticle(articles.find(article => article._id === articleId));
+        }
       }
     } catch (error) {
       console.error(`Error ${actionType}ing article:`, error);
@@ -120,7 +130,7 @@ const Dashboard = () => {
             </h1>
             {userData?._id && (
               <button
-                onClick={() => navigate('/preferences')}
+                onClick={() => navigate('/profile')}
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
                 Customize Feed
@@ -220,8 +230,6 @@ const Dashboard = () => {
               ))}
             </div>
           )}
-
-          {/* Article Modal */}
           {selectedArticle && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
               <div className="bg-white rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">

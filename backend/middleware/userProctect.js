@@ -5,7 +5,6 @@ import asyncHandler from 'express-async-handler';
 export const protect = asyncHandler(async (req, res, next) => {
     try {
         let token = req.headers.authorization;
-        console.log('token',token)
         if (!token || !token.startsWith('Bearer ')) {
             return res.status(401).json({ message: 'Not authorized, no token' });
         }
@@ -17,7 +16,6 @@ export const protect = asyncHandler(async (req, res, next) => {
         if (!req.user) {
             return res.status(401).json({ message: 'User not found' });
         }
-
         next();
     } catch (error) {
         if (error.name === 'TokenExpiredError') {

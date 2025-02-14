@@ -11,30 +11,24 @@ import {
   userLikeArticle,
   userBlockArticle,
   fetchAllArticles,
-  fetchArticlesByCategory
+  fetchArticlesByCategory,
+  deleteArticle
 } from "../controllers/articleController.js";
 import { multerUploadArticleImages } from "../config/multer.js";
-
 import { protect } from '../middleware/userProctect.js';
 
-router.post("/createCategories", createCategory);
-router.get("/fetchCategories",protect, fetchCategories);
-router.post(
-  "/createArticles",
-  multerUploadArticleImages.single("image"),
-  createArticle
-);
-router.get("/getUserArticles/:userId", fetchArticlesByUserId);
-router.get("/fetchArticlesByCategory/:categoryId", fetchArticlesByCategory);
-router.get("/getArticleById/:articleId", fetchArticlesById);
-router.get("/fetchAllArticles", fetchAllArticles);
-router.put(
-  "/updateArticle/:articleId",
-  multerUploadArticleImages.single("image"),
-  editArticle
-);
-router.put("/like/:userId/:articleId", userLikeArticle);
-router.put("/dislike/:userId/:articleId", userDislikeArticle);
-router.put("/block/:userId/:articleId", userBlockArticle);
+router.get("/fetchAllArticles",fetchAllArticles);
+router.get("/fetchCategories", fetchCategories);
+
+router.get("/fetchArticlesByCategory/:categoryId",protect,fetchArticlesByCategory);
+router.post("/createCategories",protect,createCategory);
+router.post("/createArticles",protect,multerUploadArticleImages.single("image"),createArticle);
+router.get("/getUserArticles/:userId",protect,fetchArticlesByUserId);
+router.get("/getArticleById/:articleId",protect,fetchArticlesById);
+router.put("/updateArticle/:articleId",protect,multerUploadArticleImages.single("image"),editArticle);
+router.delete("/deleteArticle/:articleId",protect,deleteArticle)
+router.put("/like/:userId/:articleId",protect,userLikeArticle);
+router.put("/dislike/:userId/:articleId",protect,userDislikeArticle);
+router.put("/block/:userId/:articleId",protect,userBlockArticle);
 
 export default router;

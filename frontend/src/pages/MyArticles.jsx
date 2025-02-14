@@ -29,6 +29,7 @@ const ArticleListPage = () => {
   };
 
   const handleDelete = async (articleId) => {
+    console.log(articleId)
     if (window.confirm("Are you sure you want to delete this article?")) {
       try {
         await API.delete(`/article/deleteArticle/${articleId}`);

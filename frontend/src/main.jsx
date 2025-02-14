@@ -11,6 +11,7 @@ import ArticleListPage from './pages/MyArticles.jsx'
 import EditArticlePage from './pages/EditArticle.jsx'
 import Dashboard from './pages/Dashboard.jsx'
 import Profile from './pages/Profile.jsx'
+// import Preferences from './pages/Preferences.jsx'
 
 import './index.css'
 import App from './App.jsx'
@@ -23,18 +24,15 @@ const router = createBrowserRouter(
        <Route index = {true} path='/' element= {<Dashboard/>}/>
        <Route path='/user-login' element= {<Login/>}/>
        <Route path='/user-regiter' element= {<Registration/>}/>
-       <Route path='/create-article' element= {<CreateArticlePage/>}/>
-       <Route path='/my-articles' element= {<ArticleListPage/>}/>
-       <Route path='/edit-user-article/:articleId' element= {<EditArticlePage/>}/>
-       {/* <Route path='/dashboard' element= {<Dashboard/>}/> */}
-       <Route path='/profile' element= {<Profile/>}/>
-
-
-
-
 
        {/* Private Routes */}
        <Route path='' element = {<PrivateRoute/>}>
+       <Route path='/profile' element= {<Profile/>}/>
+       <Route path='/create-article' element= {<CreateArticlePage/>}/>
+       <Route path='/my-articles' element= {<ArticleListPage/>}/>
+       <Route path='/edit-user-article/:articleId' element= {<EditArticlePage/>}/>
+       {/* <Route path='/preferences' element= {<Preferences/>}/> */}
+
        </Route>
     </Route>
   )

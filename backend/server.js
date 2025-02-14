@@ -13,7 +13,8 @@ connectDB();
 const app = express()
 app.use(express.json())
 app.use(cors({
-    origin: [process.env.CLIENT_ORIGIN,process.env.CLIENT_ORIGIN2,process.env.LOCAL_CLIENT_ORIGIN],
+    origin: [process.env.CLIENT_ORIGIN,process.env.CLIENT_ORIGIN2],
+    // origin: process.env.LOCAL_CLIENT_ORIGIN,
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true
   }));
