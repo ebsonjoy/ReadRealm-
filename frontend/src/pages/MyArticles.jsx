@@ -2,7 +2,8 @@ import Header from '../components/Header'
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import API from "../api/axiosInstance";
-import { Trash2, Edit, Heart, ThumbsDown, Ban, Eye, PlusCircle } from "lucide-react";
+import { useNavigate } from 'react-router-dom';
+import { Trash2, Edit, Heart, ThumbsDown, Ban, Eye, PlusCircle, X } from "lucide-react";
 const API_IMG = import.meta.env.VITE_API_IMG_URL
 const IMAGE_BASE_URL = `${API_IMG}/articleImages/`
 
@@ -11,6 +12,10 @@ const ArticleListPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { userData } = useSelector((state) => state.user);
+  const [selectedArticle, setSelectedArticle] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [articleToDelete, setArticleToDelete] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchArticles();
@@ -28,16 +33,25 @@ const ArticleListPage = () => {
     }
   };
 
-  const handleDelete = async (articleId) => {
-    console.log(articleId)
-    if (window.confirm("Are you sure you want to delete this article?")) {
-      try {
-        await API.delete(`/article/deleteArticle/${articleId}`);
-        setArticles(articles.filter(article => article._id !== articleId));
-      } catch (err) {
-        console.log(err)
-        setError("Failed to delete article");
-      }
+  const openDeleteModal = (articleId) => {
+    setArticleToDelete(articleId);
+    setShowDeleteModal(true);
+  };
+
+  const closeDeleteModal = () => {
+    setShowDeleteModal(false);
+    setArticleToDelete(null);
+  };
+
+  const handleDelete = async () => {
+    try {
+      await API.delete(`/article/deleteArticle/${articleToDelete}`);
+      setArticles(articles.filter(article => article._id !== articleToDelete));
+      closeDeleteModal();
+    } catch (err) {
+      console.log(err)
+      setError("Failed to delete article");
+      closeDeleteModal();
     }
   };
 
@@ -47,6 +61,14 @@ const ArticleListPage = () => {
       month: 'long',
       day: 'numeric'
     });
+  };
+
+  const openArticleModal = (article) => {
+    setSelectedArticle(article);
+  };
+
+  const closeArticleModal = () => {
+    setSelectedArticle(null);
   };
 
   if (loading) {
@@ -81,7 +103,7 @@ const ArticleListPage = () => {
               <div className="text-gray-500 text-lg">You haven&apos;t created any articles yet.</div>
               <p className="text-gray-600">Share your thoughts and ideas with the community!</p>
               <button
-                onClick={() => window.location.href = '/create-article'}
+                onClick={() => navigate('/create-article')}
                 className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-300"
               >
                 <PlusCircle className="mr-2" size={20} />
@@ -120,7 +142,7 @@ const ArticleListPage = () => {
                         <Edit size={18} />
                       </button>
                       <button
-                        onClick={() => handleDelete(article._id)}
+                        onClick={() => openDeleteModal(article._id)}
                         className="text-red-600 hover:text-red-800"
                         title="Delete"
                       >
@@ -166,7 +188,7 @@ const ArticleListPage = () => {
                     </div>
 
                     <button
-                      onClick={() => window.location.href = `/article/${article._id}`}
+                      onClick={() => openArticleModal(article)}
                       className="mt-4 w-full flex items-center justify-center px-4 py-2 border border-blue-600 text-blue-600 rounded-md hover:bg-blue-50 transition-colors duration-300"
                     >
                       <Eye size={16} className="mr-2" />
@@ -179,6 +201,102 @@ const ArticleListPage = () => {
           </div>
         )}
       </div>
+
+      {selectedArticle && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center border-b p-4">
+              <h2 className="text-2xl font-bold">{selectedArticle.title}</h2>
+              <button
+                onClick={closeArticleModal}
+                className="p-1 hover:bg-gray-100 rounded-full"
+              >
+                <X size={24} />
+              </button>
+            </div>
+            
+            {selectedArticle.image && (
+              <div className="w-full">
+                <img
+                  src={IMAGE_BASE_URL + selectedArticle.image}
+                  alt={selectedArticle.title}
+                  className="w-full h-64 object-cover"
+                />
+              </div>
+            )}
+            
+            <div className="p-6">
+              <div className="flex gap-2 mb-4">
+                {selectedArticle.tags.map((tag, index) => (
+                  <span
+                    key={index}
+                    className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+              
+              <p className="text-gray-700 mb-6">{selectedArticle.description}</p>
+              
+              <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: selectedArticle.content }} />
+              
+              <div className="mt-6 pt-4 border-t">
+                <div className="flex justify-between items-center">
+                  <div className="flex space-x-6">
+                    <div className="flex items-center space-x-1">
+                      <Heart size={18} className="text-red-500" />
+                      <span>{selectedArticle.likes?.length || 0} likes</span>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <ThumbsDown size={18} className="text-gray-500" />
+                      <span>{selectedArticle.dislikes?.length || 0} dislikes</span>
+                    </div>
+                  </div>
+                  <div className="text-gray-500">
+                    Published on {formatDate(selectedArticle.createdAt)}
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="border-t p-4 flex justify-end space-x-3">
+              <button
+                onClick={closeArticleModal}
+                className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 text-black"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg shadow-lg w-full max-w-md">
+            <div className="p-6">
+              <h3 className="text-lg font-medium text-gray-900 mb-3">Delete Article</h3>
+              <p className="text-gray-600 mb-6">
+                Are you sure you want to delete this article? This action cannot be undone.
+              </p>
+              <div className="flex justify-end space-x-3">
+                <button
+                  onClick={closeDeleteModal}
+                  className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDelete}
+                  className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

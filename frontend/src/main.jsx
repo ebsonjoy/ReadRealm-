@@ -1,9 +1,7 @@
 import React from 'react'
-// import { createRoot } from 'react-dom/client'
 import ReactDOM from 'react-dom/client'
 import {createBrowserRouter, createRoutesFromElements,Route, RouterProvider} from 'react-router-dom'
 import PrivateRoute from './components/PrivateRoute.jsx'
-// import Home from './pages/Home.jsx'
 import Login from './pages/Login.jsx'
 import Registration from './pages/SignUp.jsx'
 import CreateArticlePage from './pages/CreateArticle.jsx'
@@ -11,7 +9,6 @@ import ArticleListPage from './pages/MyArticles.jsx'
 import EditArticlePage from './pages/EditArticle.jsx'
 import Dashboard from './pages/Dashboard.jsx'
 import Profile from './pages/Profile.jsx'
-// import Preferences from './pages/Preferences.jsx'
 
 import './index.css'
 import App from './App.jsx'
@@ -24,15 +21,12 @@ const router = createBrowserRouter(
        <Route index = {true} path='/' element= {<Dashboard/>}/>
        <Route path='/user-login' element= {<Login/>}/>
        <Route path='/user-regiter' element= {<Registration/>}/>
-
        {/* Private Routes */}
        <Route path='' element = {<PrivateRoute/>}>
        <Route path='/profile' element= {<Profile/>}/>
        <Route path='/create-article' element= {<CreateArticlePage/>}/>
        <Route path='/my-articles' element= {<ArticleListPage/>}/>
        <Route path='/edit-user-article/:articleId' element= {<EditArticlePage/>}/>
-       {/* <Route path='/preferences' element= {<Preferences/>}/> */}
-
        </Route>
     </Route>
   )
@@ -45,15 +39,3 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   </React.StrictMode>
   </Provider>
 )
-
-
-
-
-
-
-// createRoot(document.getElementById('root')).render(
-// <Provider store={store}>
-//     <App />
-//   </Provider>
-
-// )

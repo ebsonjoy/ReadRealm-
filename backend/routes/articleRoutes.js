@@ -19,7 +19,6 @@ import { protect } from '../middleware/userProctect.js';
 
 router.get("/fetchAllArticles",fetchAllArticles);
 router.get("/fetchCategories", fetchCategories);
-
 router.get("/fetchArticlesByCategory/:categoryId",protect,fetchArticlesByCategory);
 router.post("/createCategories",protect,createCategory);
 router.post("/createArticles",protect,multerUploadArticleImages.single("image"),createArticle);

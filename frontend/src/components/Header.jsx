@@ -48,7 +48,6 @@ const Header = () => {
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Logo/Brand */}
           <div className="flex-shrink-0">
             <Link 
               to="/" 
@@ -69,7 +68,6 @@ const Header = () => {
             </Link>
           </div>
 
-          {/* Mobile menu button */}
           <div className="md:hidden">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -87,7 +85,6 @@ const Header = () => {
             </button>
           </div>
 
-          {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-1">
             <Link 
               to="/" 
@@ -165,7 +162,6 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Mobile Navigation Menu */}
       <div className={`md:hidden transition-all duration-300 ${
         mobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0 overflow-hidden'
       }`}>

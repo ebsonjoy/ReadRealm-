@@ -35,12 +35,10 @@ const Login = () => {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-4">
       <div className="w-full max-w-md">
         <div className="bg-white rounded-3xl shadow-2xl p-8 relative overflow-hidden">
-          {/* Decorative Elements */}
           <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500"></div>
           <div className="absolute -right-16 -top-16 w-32 h-32 bg-blue-100 rounded-full opacity-50"></div>
           <div className="absolute -left-16 -bottom-16 w-32 h-32 bg-purple-100 rounded-full opacity-50"></div>
 
-          {/* Header */}
           <div className="relative flex flex-col items-center mb-8">
             <div className="bg-gradient-to-r from-blue-100 to-indigo-100 p-4 rounded-2xl mb-4 transform hover:scale-105 transition-transform">
               <BookOpen className="w-10 h-10 text-blue-600" />
@@ -53,14 +51,12 @@ const Login = () => {
             </p>
           </div>
 
-          {/* Error Message */}
           {error && (
             <div className="bg-red-50 border-l-4 border-red-500 text-red-600 p-4 rounded-lg mb-6 animate-shake">
               <p className="text-sm font-medium text-center">{error}</p>
             </div>
           )}
 
-          {/* Login Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-4">
               <div>
@@ -112,22 +108,6 @@ const Login = () => {
                 </div>
               </div>
             </div>
-
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                />
-                <label className="ml-2 block text-sm text-gray-700">
-                  Remember me
-                </label>
-              </div>
-              <a href="#" className="text-sm font-medium text-blue-600 hover:text-blue-500 transition-colors">
-                Forgot password?
-              </a>
-            </div>
-
             <button
               type="submit"
               disabled={isLoading}
