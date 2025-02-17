@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch,useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 import { setCredentials } from "../redux/slices/userSlice";
 import API from "../api/axiosInstance";
@@ -13,6 +13,13 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { userData } = useSelector((state) => state.user);
+
+  useEffect(() => {
+    if (userData) {
+      navigate('/');
+    }
+  }, [navigate, userData]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

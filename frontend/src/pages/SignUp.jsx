@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { useSelector } from 'react-redux';
 import API from "../api/axiosInstance";
 import { Mail, Lock, User, Calendar, Phone, BookOpen, ChevronRight } from "lucide-react";
 
@@ -19,6 +20,14 @@ const Registration = () => {
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
+
+  const { userData } = useSelector((state) => state.user);
+
+  useEffect(() => {
+    if (userData) {
+      navigate('/');
+    }
+  }, [userData]);
 
   useEffect(() => {
     const fetchCategories = async () => {
