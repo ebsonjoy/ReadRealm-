@@ -48,9 +48,9 @@ const CreateArticlePage = () => {
         return;
       }
       
-      const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/gif','image/webp','image/jp2','image/avif'];
       if (!allowedTypes.includes(file.type)) {
-        setErrors({ ...errors, image: "Only JPG, PNG, and GIF files are allowed" });
+        setErrors({ ...errors, image: "Only JPG, PNG, WEBP, AVIF and GIF files are allowed" });
         return;
       }
       
